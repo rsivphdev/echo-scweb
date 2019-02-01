@@ -1,0 +1,1752 @@
+@import "bootstrap/bootstrap.less";
+@import "pretty-buttons.less";
+@import "variables.less";
+@import "datatables.less";
+@import "fontawesome/font-awesome.less";
+@font-face {
+	font-family: 'Myriad-Pro';
+	src: url('../fonts/MyriadWebPro.ttf');
+}
+
+// ------------------------------------------------------------------------------------------------
+// Utility classes
+// ------------------------------------------------------------------------------------------------
+.divider {
+  height: 2px;
+  width:100%;
+  display:block; /* for use on default inline elements like span */
+  margin: 0 0;
+  overflow: hidden;
+  background-color: #ccc;
+}
+
+.mirror{
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+}
+
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
+}
+.row.no-gutter [class*='col-']:not(:first-child),
+.row.no-gutter [class*='col-']:not(:last-child) {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+// To make all columns in a row equal height (fill row, vertically) if desired
+.equal{  
+      display: table;
+      width: 100%
+}
+.equal-column{
+	float: none;
+    display: table-cell;
+    vertical-align: top;
+}
+.equal > div[class*='col-']{
+	&:extend(.equal-column);
+}
+
+.flex{	
+    display: flex;
+}
+
+//classes to center content in bootstrap columns while preserving responsiveness
+.column-center(){
+	float:none;
+    display:inline-block;
+    vertical-align:middle;
+  	margin-right:-4px;
+}
+.vcenter-md {
+    @media (min-width: @screen-md-min) {
+		.column-center()
+    }
+}
+.vcenter-sm {
+    @media (min-width: @screen-sm-min) {
+		.column-center()
+    }    
+}
+.vcenter-xs {
+    @media (min-width: @screen-xs-min) {
+    	.column-center()
+    }    
+}
+
+// Special classes for text justifying for particular breakpoints
+.text-left-not-xs , .text-left-not-sm , .text-left-not-md , .text-left-not-lg {
+	text-align: left;
+}
+
+.text-center-not-xs , .text-center-not-sm , .text-center-not-md , .text-center-not-lg {
+	text-align: center;
+}
+
+.text-right-not-xs , .text-right-not-sm , .text-right-not-md , .text-right-not-lg {
+	text-align: right;
+}
+
+.text-justify-not-xs , .text-justify-not-sm , .text-justify-not-md , .text-justify-not-lg {
+	text-align: justify;
+}
+
+@media (max-width: @screen-xs-max) {
+	.text-left-not-xs , .text-center-not-xs , .text-right-not-xs , .text-justify-not-xs {
+		text-align: inherit;
+	}
+
+	.text-left-xs {
+		text-align: left;
+	}
+
+	.text-center-xs {
+		text-align: center;
+	}
+
+	.text-right-xs {
+		text-align: right;
+	}
+
+	.text-justify-xs {
+		text-align: justify;
+	}
+}
+
+@media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
+	.text-left-not-sm , .text-center-not-sm , .text-right-not-sm , .text-justify-not-sm {
+		text-align: inherit;
+	}
+
+	.text-left-sm {
+		text-align: left;
+	}
+
+	.text-center-sm {
+		text-align: center;
+	}
+
+	.text-right-sm {
+		text-align: right;
+	}
+
+	.text-justify-sm {
+		text-align: justify;
+	}
+}
+
+@media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
+	.text-left-not-md , .text-center-not-md , .text-right-not-md , .text-justify-not-md {
+		text-align: inherit;
+	}
+
+	.text-left-md {
+		text-align: left;
+	}
+
+	.text-center-md {
+		text-align: center;
+	}
+
+	.text-right-md {
+		text-align: right;
+	}
+
+	.text-justify-md {
+		text-align: justify;
+	}
+}
+
+@media (min-width: @screen-lg-min) {
+	.text-left-not-lg , .text-center-not-lg , .text-right-not-lg , .text-justify-not-lg {
+		text-align: inherit;
+	}
+
+	.text-left-lg {
+		text-align: left;
+	}
+
+	.text-center-lg {
+		text-align: center;
+	}
+
+	.text-right-lg {
+		text-align: right;
+	}
+
+	.text-justify-lg {
+		text-align: justify;
+	}
+}
+
+//classes for padding out space between rows proportionally
+.margin-bottom-xs {
+	margin-bottom: ceil(@line-height-computed / 4);
+}  
+.margin-bottom-sm {
+	margin-bottom: ceil(@line-height-computed / 2);
+} 
+.margin-bottom-md {
+	margin-bottom: @line-height-computed;
+}
+.margin-bottom-lg {
+	margin-bottom: ceil(@line-height-computed * 2);
+}  
+
+.nobr { 
+	white-space:nowrap;
+}
+
+// Mixin for use with overlays
+.overlay-cover {
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	background-color:rgba(0, 0, 0, 0.85);
+	z-index:9999;
+	padding: 5px @vphsc-overlay-side-padding;
+	color: white;	
+
+}
+
+.overlay-holder {
+	position: relative;
+}
+
+//Horizontally center in a table cell
+.centered-cell {
+	text-align: center;
+}
+
+//List of links mixin
+.list-of-links {
+	list-style-type: none;
+	padding: 0 0 8px;
+	margin: 0;
+	li {//For pre-10 IE
+		list-style-type: none;
+	}
+}
+
+.list-of-links-padded-left {
+	list-style-type: none;
+	padding-left :60px;
+	margin: 0;
+	li {//For pre-10 IE
+		list-style-type: none;
+	}
+}
+.no-input-bottom-margins{
+	.form-group{
+		margin-bottom: 0px;
+	}
+}
+
+.wordwrap{
+	word-wrap: break-word;
+}
+
+.wordbreak{
+	word-break: break-all;
+}
+
+.allcaps{
+	text-transform: uppercase;
+}
+
+.wrap-in-button{
+	white-space:normal !important;
+}
+
+// The basic version of btn-default before it got overriden in pretty-buttons
+.btn-bootstrap-default {
+	color: @btn-default-color;
+    background-color: @btn-default-bg;
+    border-color: @btn-default-border;
+    &:hover{
+    	background-color: #e6e6e6;
+    	border-color: #adadad;
+    }
+}
+
+.align-with-list-above{
+	padding-left: 40px;
+	margin-top: -10px;
+}
+
+.textWarningHighlight{
+	animation: pulse 3s;
+}
+@keyframes pulse {
+  0% {
+    color: black;
+  }
+  20% {
+    color: @state-warning-text;
+  }
+  100% {
+    color: black;
+  }
+}
+
+.icon-background-PAUSED {
+    color: #FF0000;
+}
+
+.icon-background-RUNNING {
+    color: #008000;
+}
+
+.icon-background-RESUMING {
+    color: #F9EB1F;
+}
+
+.icon-background-STOPPED {
+    color: #ABA9A8;
+}
+
+.icon-background-FILEPAUSED {
+    color: #FF0000;
+}
+
+.icon-background-FAILED {
+    color: #F9EB1F;
+}
+
+// --------------------------------------------------------------------------------/Utility classes
+
+
+// ------------------------------------------------------------------------------------------------
+// Bootstrap overrides, where variables do NOT exist
+// ------------------------------------------------------------------------------------------------
+html, body {
+	height: 100%;
+}
+
+h1 {
+	font-weight: 600;
+}
+
+.control-label, .summary-label {
+	color: @vphsc-accessible-control-label-color;
+}
+
+.text-warning {
+	font-weight: 600;
+}
+.text-success {
+	font-weight: 600;
+}
+
+.well {
+	padding: 0 15px 15px 15px;
+}
+
+.list-group-item-heading {
+	font-weight: 500;
+	font-size: @font-size-h2;
+}
+
+
+.panel-success {
+	background-color: transparent !important;
+}
+
+a.accordion-toggle:before {
+	font-family: fontAwesome;
+	content: "\f147";
+}
+
+a.accordion-toggle.collapsed:before {
+	content: "\f196";
+}
+
+a.accordion-toggle a:hover , a:focus {
+	text-decoration: none ! important;
+}
+
+.panel-heading {
+	font-weight: 600;
+	font-size: 15px;
+	letter-spacing: -0.4px;
+	a:not(.accordion-toggle){
+		font-size: 13.5px;
+	}
+	padding-top: 8px;
+	padding-bottom: 6px;
+	.radio-inline {
+		margin-left: 40px
+	}
+	.subheading{
+		font-weight: 500;
+	}
+}
+
+.input-group input{
+	border-radius: @input-border-radius 0px 0px @input-border-radius !important;
+}
+
+.btn-wrap {
+	white-space: normal;
+}
+
+//Some tweaks to table settings
+.table {
+	th p{
+		margin-bottom: 0px;
+	}
+	tr td{
+		.radio{
+			margin-top: 0px;
+		}
+		input[type="radio"]{
+			margin-top: 1px;
+		}
+	}
+}
+
+// To align bootstrap checkboxes and radios vertically, for some reason under this config there's an inherent offset.
+.checkbox {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+label {
+    input {
+    	margin-top: 0px !important;
+    }  
+}
+// ----------------------------------------------------------------------------/Bootstrap overrides
+
+
+// ------------------------------------------------------------------------------------------------
+// Header and Footer
+// ------------------------------------------------------------------------------------------------
+header {//The main header (with BC logo, app title, user)
+	background-color: @vphsc-head-foot-background;
+	border-bottom: 2px solid #fcba19;
+	padding-top: 10px;
+	
+	.title, .headerlogo{
+		display: table-cell;
+		text-align: left;	
+	}
+	
+	.headerlogo{	
+		margin: 0 auto;
+	    background: url(../img/gov3_bc_logo.png);
+		background-repeat: no-repeat;
+	}
+			
+	.title {
+		color: #fff;
+		font-size: @font-size-h2;
+		font-weight: 500;
+	}
+	
+	.login-header {
+		color: white;
+		a {
+			color: white;
+		}
+		.fa-user{
+			color: #42b9f4;
+		}
+	}
+	
+	//Non-mobile
+	@media ( min-width : @screen-sm-min) {
+		padding-bottom: 20px;
+		.title-header-col{					
+			.title{
+				padding-top: @base-header-top-padding;		
+			}
+			.headerlogo{ 
+				width: 165px;
+			    height: 45px;
+			}		
+		}		
+		.login-header {
+			padding-top: @base-header-top-padding + 5;	
+		}		
+	}
+	
+	//Mobile (bootstrap xs size)
+	@media ( max-width : @screen-xs-max) {	
+		padding-bottom: 8px;	
+		.title-header-col{					
+			.title{
+				padding-top: @base-header-top-padding - 6;	
+				font-size: 18px;	
+			}	
+			.headerlogo{	
+				width: 125px;
+			    height: 35px;
+		    	background-size: 125px;
+			}		
+		}
+		.non-mobile-size {
+			display: none;
+		}
+		.login-header {
+			padding-top: 7px;
+		}	
+	}	
+}
+ 
+footer {//Common page footer
+	background-color: @vphsc-head-foot-background;
+	border-top: 2px solid #fcba19;
+	margin-top: 15px;
+	
+	nav {
+		margin-bottom: 0px !important;
+		@media ( min-width : @screen-sm-min) {
+		ul li+li {
+				border-left: 1px solid #4b5e73;
+			}
+		}
+	}
+	
+	.navbar {
+		padding-top: 10px;
+		padding-bottom: 8px;
+		min-height: 0px;
+	}
+	
+	.navbar-nav>li>a {
+		padding-top: 0px;
+		padding-bottom: 0px;
+	}
+	
+	.navbar-text {
+		color: @gray-light !important;
+		margin-top: 3px;
+		margin-bottom: 0px;
+		margin-right: 0px !important;
+		padding-left: 15px;
+	}
+
+}
+// ------------------------------------------------------------------------------/Header and Footer
+
+
+// ------------------------------------------------------------------------------------------------
+// Navigation
+// ------------------------------------------------------------------------------------------------
+.nav-regi {
+	background-color: #1D5A8C;
+	padding-top: 5px;
+	font-size: @font-size-h4;
+	font-weight: 500;
+	border-bottom: 0px;
+	margin-bottom: 15px;
+	.nav-tabs {
+		border-bottom: 0px;
+		 a {
+			color: #fff;
+			border-radius: 5px 5px 0 0;
+			height: 60px;
+			padding-top: 20px;
+		}
+		>li.active>a, 
+		>li>a:hover,
+		>li.active>a:hover, 
+		>li.active>a:focus {
+			color: @gray-darker;
+		}
+	}
+}
+
+.nav-staff-admin{
+	margin-bottom: 10px;
+	padding-top: 5px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    .nav-tabs { 
+		border-bottom: 0px;
+    	a {
+    		color: black;
+    	}
+		>li.active>a {
+			border-top: 2px solid @vphsc-menu-hover;
+		}
+		>li.active>a, 
+		>li>a:hover,
+		>li.active>a:hover, 
+		>li>a:focus {
+			font-weight: 600;
+		}
+		
+		>li:not(.active)>a:hover,
+		>li:not(.active)>a:focus {
+			background-color: white;
+			border: none;
+		}
+    }
+   .staff-menu-button, .input-group{
+    	margin-bottom: 3px;
+    }
+    .staff-menu-button {
+    	border-radius: 3px;
+    	@media (min-width: @screen-md-min) {
+	    	width: 100%; 
+			display:block;
+		}
+    }
+}
+
+#menu-button{
+	-moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+	border: 1px solid white;
+    background: #38598A;
+    &:hover{
+    	background: @vphsc-menu-hover;
+    }
+}
+#menu-button, #menu-button-short{
+	color: white;  
+    .fa{
+    	color: white; 
+    }
+}
+
+#menu-dropdown{
+	margin-left: 14px;
+}
+
+.nav-dashboard {
+	@media (max-width: @screen-sm-max){
+		#menu-button{
+			display: none;
+		}		
+		.nav-tabs {
+			font-size: 14px;
+		}
+	}
+	@media (min-width: @screen-md-min){
+		#menu-button-short{
+			display: none;
+		}	
+	}
+}
+// -----------------------------------------------------------------------------------------/Navigation
+
+
+address {
+	margin-bottom: 0;
+}
+
+.searchResultList{
+	.list-of-links();
+}
+.document-link-list{
+	.postIcon-span-text{
+		margin-bottom: 5px;
+	}
+}
+
+.info-flex{
+	margin-right: 4px;
+
+}
+textarea { 
+	resize: vertical;
+}
+
+label{
+    font-weight : 400;
+    margin-bottom : 0px;
+}
+
+button i, a i {
+	color: #64BCE9;
+}
+
+button p {
+	margin: 0 0 0;
+}
+.btn p {
+	//For anything other than a button styled as .btn
+	margin: 0 0 0;
+}
+
+.containerPadding {
+	padding-left: @padding-base-horizontal;
+	padding-right: @padding-base-horizontal;
+}
+
+
+.nav-workflow-title {
+	background-color: #fff;
+}
+
+
+/* Wrapper for page content to push down footer */
+#pad {
+	height: 43px;
+}
+#wrap {
+  	min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -43px;
+}
+
+.panel-body h2{
+	margin-top: 0px;
+}
+
+.non-title-header{
+	margin-top: 0px;
+}
+.form-side-help{
+	padding-left: 0px;
+	padding-top: 28px;
+}
+.form-side-help-above-xs{
+    @media (min-width: @screen-sm-min) {
+		padding-left: 0px;
+		padding-top: 28px;
+	}  
+}
+.form-side-input-align{
+	padding-top: 15px;
+}
+
+#request-received-well{
+	&:extend(.well);
+	margin-top: 20px;
+	border-color: rgb(175, 175, 175);
+	padding-bottom: 200px;
+	p{
+		font-size: 19px;
+		padding-bottom: 30px;
+	}
+}
+
+
+
+.completed-filing-item{
+	border-style: solid;
+    border-color: #AFAFAF;
+    border-width: 0px 0px 1px 0px;
+    margin-bottom: 10px;
+}
+.certified-doc-contact p{
+	padding-left: 5px
+}
+.certified-doc-contact a{
+	padding-left: 5px
+}
+.completed-filings div.completed-filing-item:last-child{
+	border-style: none;
+}
+
+.dashboard-director{
+	width: 32%;
+	padding-right: 20px;
+    margin-bottom: 25px;
+    display: inline-block;
+    vertical-align: top;
+}
+@media (max-width: 767px) {
+	.dashboard-director{
+		width: 100%;
+	}
+}
+
+.directorName, .applicantName{
+	word-wrap:break-word;
+}
+
+.directorAddress {
+	word-wrap:break-word;
+}
+
+
+#page_nav_span_container
+{//start hidden
+    display: none;
+}
+
+#page_navigation {
+	ul{
+	margin-top: 0px;
+	margin-bottom: 5px;
+	}
+	.active_page{
+	background:darkblue;
+	color:white !important;
+	}
+}
+
+.dashboard-contact{
+	margin-bottom: 15px;
+}
+
+.society-details-panel{
+	ul{
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+	}
+	li{
+		background: white;
+	    border-color: lightgray;
+	    border-width: 0px 0px 1px 0px;
+	    margin-bottom: 0px;
+	    &:last-child {
+	    	border-style: none        
+    	}
+	}
+	.panel-body{
+		padding-bottom: 0px;
+		h4{
+			margin-top: 0px;
+			margin-bottom: 10px;
+		}
+	}
+	.panel-footer{
+		background: white;
+	}
+}
+
+.my-societies{
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 5px;
+	li{
+	    padding-top: 15px;
+	    padding-bottom: 15px;	
+	}
+}
+
+#dev-output{
+	font-size: 13px;
+}
+
+.global-warning {
+	p {
+		margin-bottom: 0px;
+		font-size: 16px;
+	}
+}
+
+.panel-indent{
+	padding-left: @vphsc-panel-side-indent;
+}
+.panel-indent-both{
+	&:extend(.panel-indent);
+	padding-right:  @vphsc-panel-side-indent;
+}
+.radio-indent-for-panel{
+	//For some reason need to reapply padding for radio divs inside this panel-indent div
+	padding-left: @vphsc-panel-side-indent + 3;	
+}
+
+.payment-panel{
+	&:extend(.highlight-panel);
+	padding-top: 0px;
+	margin-bottom: 0px;
+	.payment-options{
+		.radio{			
+			margin-bottom: 0px;
+		}
+		.radio:not(:first-child){
+			margin-top: 5px;
+		}
+		.payment-outage{
+			margin-left: 20px;
+		}
+		.no-cc-help {
+			margin-top: 15px;
+		}
+	}
+}
+.options-panel{
+	border-top: 0px;
+	hr {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+}
+
+.summary-item {
+	.summary-item-header{
+		a.accordion-toggle {
+			color: @vphsc-accessible-control-label-color;
+		}
+		a.accordion-toggle:hover {
+			text-decoration: none;
+		}
+	}
+	.summary-item-content{
+		margin-left: 17px;
+		
+	}
+	h4{
+		margin-top: 0px;
+		color: @vphsc-accessible-control-label-color;
+	}
+}
+
+.filing-summary {
+	hr {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.panel, .alert{
+		margin-bottom: 9px;
+	}
+	
+	.cert-docs{
+		.panel-body{
+			padding-bottom: 5px;
+		}
+	    .radio{
+	    	margin-top: 0px;
+	    	margin-bottom: 0px;
+	    }
+	    input[type="radio"] {
+	    	margin-top: 1px;
+	    }
+	    #certifiedDocumentDeliveryOption label {
+	    	&:extend(.collapse); //Hide the empty label
+	    }
+	    .form-inline {
+	    	margin-bottom: 15px;
+	    	margin-top: 5px;
+	    	label input {
+	    		margin-right: 8px;
+	    	}
+	    	div#certifiedDocumentDeliveryOption{
+	    		margin-left: 5px;
+	    	}
+	    }
+	    .cert-options {
+	    	padding-left: 22px;
+	    	padding-right: 22px;
+	    }
+	}
+}
+
+.agreement{
+	.panel-body {
+		padding-top: 12px;
+		padding-bottom: 10px;	
+	}
+    input {
+    	margin-top: 0px;
+    }
+}
+
+.filing-panel{
+	.panel-body{
+		padding: 0px !important; //to overrride the bootstrap panel
+	}
+	.filing-step {
+		&:extend(.overlay-holder);//To support overlay
+		padding-left: 30px;
+		padding-right: 15px;
+		h3 a {
+			padding-left: 15px;
+		}
+	}
+	.filing-step:not(.highlight-panel):not(:last-child) {
+		border-bottom: @vphsc-panel-separator;
+	}
+	.active-step{
+		color: @brand-primary;
+	}
+	.inactive-step{
+		color: grey;
+	}
+}
+
+.black-label {
+	color: @text-color !important;
+}
+	
+#wigsy {
+	label {
+		&:extend(.collapse); //Hide the empty label
+	}
+	.mce-tinymce {
+		padding-right: 1px; //right border not rendering unless we add this
+	}
+}
+
+.highlight-panel{
+	border: @vphsc-panel-highlight;	
+}
+
+
+.incorp-nr-subhead{
+	margin-top: 4px;
+}
+.incorp-nr-links{
+	margin-top: 0px;
+	@media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
+		margin-top: 26px;
+	}
+}
+
+.accordion-indent{
+	padding-left: 40px;
+}
+
+.sub-radio-text{
+	padding-left: 37px;
+}
+
+.bylaw-radio .radio{
+	padding-top: 20px;
+}
+
+.required{
+	color: @brand-danger !important;
+}
+
+.form-group-no-bottom {
+	&:extend(.form-group);
+	margin-bottom: 2px;
+}
+
+.heading-reference{
+	font-weight: 600;
+}
+
+.filing-step-save-cancel {
+	margin-bottom: 10px;
+}
+
+#primaryEmailDisplay, #secondaryEmailDisplay{
+	margin-bottom: 0px;
+}
+
+.onboard-panel {
+	padding-bottom: 15px;
+	h3{
+		margin-top: 0px;
+	}	
+	.form-group{
+		margin-bottom: 0px;
+	} 
+	.onboard-padding{
+		padding-bottom: 100px;
+	}
+}
+
+.onboard-panel-error {
+	p{
+		color: @brand-danger;
+		margin-bottom: 0px;
+	}
+}
+
+.enter-key-panel {
+	.alert();
+	.alert-info();
+	margin-top: 25px;
+	margin-bottom: 25px;
+	padding: 15px;
+	h2{
+		margin-bottom: 20px;
+	}
+	.btn{
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+	color: black;
+}
+
+
+.accession-num-input{
+	.acc-input{
+		padding-left:0px;
+		padding-right:0px;
+	}
+	.accnum-dash {
+		padding-top: 8px;
+		padding-left: 20px;
+		padding-right: 0px;
+	}
+	label{
+		&:extend(.collapse); //Hide the empty labels for spacing here
+	}
+}
+
+.panel-overlay {
+	&:extend(.overlay-cover);
+	background-color: rgba(255, 255, 255, 0.70);
+
+}
+
+.in-cell-expandable-body {
+	font-size: 13px;
+	border-color: @link-color;
+	border-style: solid;
+    border-width: 0px 0px 0px 1px;
+    margin-top: 0px;
+    margin-left: 5px;	
+    padding: 0px 15px 10px 11px;
+    p:first-child { 
+    	padding-top: 5px;
+    }
+    p:last-child { 
+    	margin-bottom: 0px;
+    }
+    .delivery-reciever:not(:first-child) {
+    	border-top: 1px dashed @link-color;
+    	padding-top: 8px;
+    }
+    .delivery-reciever:not(:last-child) {
+    	padding-bottom: 8px;
+    } 
+}
+
+.file-upload-result {
+	padding: 20px;
+	border: 0.8px solid @panel-default-border;
+	.file-upload-link {
+		margin-left: 18px;
+	}
+	.btn {
+		margin-left: 20px;
+	}
+}
+
+.filingButtons {
+	@media (max-width: @screen-sm-max) {
+		margin-bottom: 20px;
+	}
+}
+
+.name-choices {
+	.names-section input{
+		.allcaps();
+	}
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// The Yes | No option selection (presently only used on the staff correction filing)
+// Note: This uses flexbox. DON'T use flexbox on non-staff stuff since it is not supported on 
+// the more ancient browsers that we're supporting for users.
+// ------------------------------------------------------------------------------------------------ 
+.yesNoChoiceHeader, .yesNoChoice .text-success{
+	font-size: 15pt;
+}
+.yesNoChoice {
+	flex-direction:row;
+	display:flex;
+    .choiceDesc{
+    	padding-top: 5px;
+    	margin-left: 5px;
+    }
+}
+// ------------------------------------------------------------------------------------------------
+
+
+// ------------------------------------------------------------------------------------------------
+// The main screen layouts (dashboards, user dashboards, staff pages)
+// ------------------------------------------------------------------------------------------------
+.dashboard-sidebar {
+	@media (max-width: @screen-sm-max){
+		.dashboard-sidebar-bottom{
+			display: none;
+		}
+	}
+	@media (min-width: @screen-md-min){
+		padding-right: 0px;
+	}
+	.well{
+		border-color: #d9d9d9 !important;
+		-webkit-box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    	box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+		h2{
+			margin-bottom: 0px;
+		}
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+	.public-head {
+		margin-bottom: 0px;
+	    border-bottom-style: none;
+	}
+	.staff-head {
+		margin-bottom: 5px;
+	}
+	nav.list-group {
+		.nav-side-filing {
+			display: inline-block;
+			width: 70%
+		}
+		.nav-side-fee {
+			width: 28%;	
+			text-align: right;
+			display: inline-block;	
+			vertical-align: top;
+		}		
+	}
+}
+.dashboard-main{
+	@media (min-width: @screen-md-min){
+		.dashboard-sidebar-bottom{
+			display: none;
+		}
+	}
+}
+
+.admin-sidebar-bottom {
+	.btn{
+		margin-bottom: 5px;
+	}
+}
+
+.page-load-pending .jumbotron {
+	background-color: inherit;	
+}
+
+.society-status .control-label{
+	margin-right: 5px;
+}
+
+.sublinks a{
+	padding-left: 30px;
+}
+
+.radio-with-infotext {
+	.radio{
+		margin-bottom: 0px;
+	}
+}
+.under-radio-infotext{
+	margin-left: 17px;
+}
+
+.initial-other-options {
+	.btn {
+		.wrap-in-button();
+	}
+}
+// ---------------------------------------------------------------------------------------/layouts
+
+// ------------------------------------------------------------------------------------------------
+// The Todo panels
+// ------------------------------------------------------------------------------------------------
+.todo-panel {
+	padding: 0;
+	.panel-group{
+		margin-bottom: 0px;
+	}
+	.panel-body{
+		padding-top: 5px;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	hr{
+		margin-top: 15px;
+		margin-bottom: 10px;
+		border-style: dotted;
+	}
+	h1{
+		margin-top: 0px;
+		margin-bottom: 15px;
+	}
+	.panel-success {
+		box-shadow: none;
+	}
+	.panel-success:not(:last-child) {
+		border-bottom-style: solid;
+		border-bottom-color: gainsboro;
+	}
+			
+}
+
+.todo-indent{
+	//need padding in JUST this column, so override the "no-gutter" higher selectivity here
+	padding-left: 24px !important;
+}
+.todo-action-row{
+	&:extend(.todo-indent);
+	padding-bottom: 15px;
+	.delete-filing-col{
+		margin-left: -9px; //To align with the help texts in the panel headers.
+	}
+}
+
+// -------------------------------------------------------------------------------------/todo panel
+
+
+// ------------------------------------------------------------------------------------------------
+// Things specific to the Admin Corporation page
+// ------------------------------------------------------------------------------------------------
+.staff-filings-panel{
+	margin-bottom: 9px;
+	&:extend(.overlay-holder);//To support overlay
+	.panel-heading a.accordion-toggle{
+		color: black;
+	}
+	table{
+		font-size: @vphsc-datatable-font;
+	}
+	.radio{
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+}
+.staff-filings-empty{
+	.panel-heading{
+		padding-left: 35px;
+	}
+	.panel-body{
+		padding-top: 20px;
+		padding-bottom: 20px;	
+	}
+}
+#comments-collapse{
+	hr{
+		margin-top: 8px;
+		margin-bottom: 0px;
+		height: 2px;
+	    color: #dddddd;
+	    background: #dddddd;
+	    font-size: 0;
+	    border: 0;
+	}
+	.form-group label {
+		display: none;
+	}
+	.comment-active-row {
+		margin-bottom: 8px;
+		.form-group{
+			margin-bottom: 0px;
+		}
+	}
+	.comment-table-top-pad {
+		padding-top: 12px;
+	}
+	.comment-table-left-pad {
+		padding-left: 20px;
+	}
+	.new-comment hr, .clonedInput hr{
+		margin-top: 0px;
+		margin-bottom: 0px;
+		height: 1px;
+	    color: #dddddd;
+	    background: #dddddd;
+	    font-size: 0;
+	    border: 0;
+	}
+	.new-comment:hover, .clonedInput:hover {
+		background-color: #f5f5f5;
+	}
+	
+}
+// -------------------------------------------------------------------------------------/admin corp
+
+
+// ------------------------------------------------------------------------------------------------
+// Staff search results panel
+// ------------------------------------------------------------------------------------------------
+.staff-search {
+	h4{
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+}
+// -----------------------------------------------------------------------------------/Staff search
+
+
+// ------------------------------------------------------------------------------------------------
+// Related to Regi Address
+// ------------------------------------------------------------------------------------------------
+.address-block{
+	box-shadow: 1px 1px 1px rgba(136, 136, 136, 0.58);
+	input, select, textarea{
+		.allcaps()
+	}
+}
+.address-block.shadowOff{
+	box-shadow: none;
+}
+
+.address-header{
+	margin-right: 0px;
+	margin-left: 0px;
+}
+.address-header-readonly{
+	border-style: none;
+	display: inline;
+}
+.address-header-active{
+	&:extend(.equal);
+	border: 1px solid #6D93B5;
+}
+.address-header-active > div[class*='col-']{
+	&:extend(.equal-column);
+}
+
+.address-lookup {
+	background-color: #274967;
+	padding: 10px 10px;
+	margin-bottom: 0px;
+	h3, p, a:not(.btn){
+		color: white;
+	}
+	h3{
+		margin-top: 0px;
+	}
+	a:not(.btn), a:not(.btn):visited{
+		text-decoration: underline;
+	}
+	p{
+		margin-bottom: 3px;
+	}
+	.input-group{
+		margin-bottom: 10px;
+	}
+}
+
+.address-view-edit{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.address-entry {
+	padding: 10px 15px 0px;
+	border: 1px solid #6D93B5;
+	border-top: 0px;
+	&:extend(.overlay-holder);//To support overlay
+	
+}
+
+.address-overlay {
+	&:extend(.overlay-cover);
+	h3, a {
+		color: white !important;
+	}
+	a:not(.cancelAddressOverlay), a:not(.cancelAddressOverlay):visited{
+		text-decoration: underline;
+	}
+	.radio {
+		//For some reason need to reapply padding for radio divs inside this div
+		padding-left: @vphsc-overlay-side-padding;
+	}
+	overflow-y:scroll;
+}
+
+.clear-address{
+	margin-top: 17px;
+}
+// --------------------------------------------------------------------------------/Address control
+
+
+// ------------------------------------------------------------------------------------------------
+// For lining up the text that appears next to the FA icons
+// ------------------------------------------------------------------------------------------------
+.preText-icon{
+	float: left;
+	padding-right: 5px;
+}
+.postIcon-span-text{
+	display: block;
+	overflow: hidden;
+}
+// ------------------------------------------------------------------------------/FA Icon Alignment
+
+
+// ------------------------------------------------------------------------------------------------
+// Society Messages
+// ------------------------------------------------------------------------------------------------
+.warnings-onload{
+	margin-bottom: 10px;
+}
+.dashboard-message-panel{
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.messages {
+	.message-large {
+		font-size: @font-size-h4;
+		p:not(:first-child), ul, ol{
+			font-size: @font-size-base;
+		}
+	}
+	.message{
+		p:last-child, ul, ol{
+			margin-bottom: 0px;
+		}
+		padding-top: 12px;
+		padding-bottom: 10px;
+	}
+	.message:not(:last-child) {
+		border-bottom: 1px dotted grey;
+	}
+}
+// -------------------------------------------------------------------------------/Society Messages
+
+
+// ------------------------------------------------------------------------------------------------
+// Landing page
+// ------------------------------------------------------------------------------------------------
+.login-panel {
+	padding: 15px;
+	.login-subtitle{
+		border-bottom: 1px solid #38598A;
+		margin-bottom: 15px;
+	}
+	h1{
+		margin-top: 0px;
+	}
+	.btn {
+		@media (max-width: @screen-xs-max) {
+			margin-bottom: 8px;
+		}
+	}
+
+}
+
+// -----------------------------------------------------------------------------------/Landing Page
+
+
+// ------------------------------------------------------------------------------------------------
+// Survey page
+// ------------------------------------------------------------------------------------------------
+.survey-instructions{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.survey-question{
+    margin-bottom: 10px;
+}
+
+.survey-question-font{
+    font-weight: bold;
+}
+// ----------------------------------------------------------------------------------------/Survey
+
+
+// ------------------------------------------------------------------------------------------------
+// Name Request Start Page
+// ------------------------------------------------------------------------------------------------
+.name-request-start{
+	@media (min-width: @screen-sm-min){
+		#yes{
+			h1{
+				padding-top: 12px;
+			}
+			.btn{
+				margin-top: 16px;
+			}
+			.form-group{
+				margin-bottom: 0px;
+			}
+		}
+		#no{
+			h1{
+				margin-top: 12px;
+				margin-bottom: 0px;
+			}
+		}
+		#nr-reciept-location{
+			padding-top: 30px;
+			padding-bottom: 30px;
+		}
+	}
+	@media (max-width: @screen-xs-max){
+		#nr-reciept-location{
+			padding-top: 8px;
+		}
+		#no{
+			.btn{
+				margin-bottom: 20px;
+			}
+			h1{
+				margin-top: 0px;
+			}
+		}
+		#yes{
+			h1{
+				margin-top: 0px;
+			}
+		}
+	}
+}
+
+.name-request-pre-instructions {
+	.alert();
+	.alert-info();
+	padding: 20px;
+	margin-bottom: 30px;
+	p:last-of-type{
+		margin-bottom: 0px;
+	}
+}
+// ---------------------------------------------------------------------/Name Request Start Page
+
+
+// ------------------------------------------------------------------------------------------------
+// Name Request Search Results
+// ------------------------------------------------------------------------------------------------
+#name-results{
+	padding-top: 10px;
+	.name-search-item{
+		margin-top: 7px;
+	}
+	#page-nav-content, #page_navigation{
+		margin-top: 10px;
+	}
+}
+// --------------------------------------------------------------------/Name Request Search Results
+
+
+// ------------------------------------------------------------------------------------------------
+// Key Strength
+// ------------------------------------------------------------------------------------------------
+#passStrengthIndicator {
+	cursor: help;
+	border: #cccccc thin solid;
+	font-size:11px;
+	margin-top: 7px;
+	line-height: 23px;
+	width: 250px;
+	background-color: #f1f1f1;
+	#pwStrength {
+		#pwWeak {
+			width:34%;
+			text-align: center;
+		}
+		#pwMedium, #pwStrong{
+			width:33%;
+			text-align: center;
+		}
+	}
+	.keyStrong{
+		background-color: @state-success-bg;
+	}
+	.keyMedium{	
+		#pwMedium, #pwWeak{
+			background-color: @state-warning-bg;
+		}	
+	}
+	.keyWeak{
+		#pwWeak{
+			background-color:darken(@state-danger-bg, 1.5%);	
+		}	
+	}
+	#moreCharacters td, #noSpaces td{
+		background-color: darken(@state-danger-bg, 1.5%);
+		text-align: center;
+	}
+}
+// ----------------------------------------------------------------------------------/Key Strength
+
+
+// ------------------------------------------------------------------------------------------------
+// The long Terms and Conditions box (only used on the PAD screen so far)
+// ------------------------------------------------------------------------------------------------
+.terms-box {
+	border: 1px solid grey;
+  	border-radius: 2px 2px 0px 0px;
+  	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset;
+  	margin-bottom: 15px;
+  	margin-top: 15px;
+	.terms-box-terms {
+		padding: 10px;
+	  	background-color: Gainsboro;
+		border-bottom: 1px solid grey;	
+		h1 {
+			margin-top: 8px;
+		}
+		p {
+			margin-top: 10px;
+		}	
+		height: 200px;
+		overflow-x: hidden;
+		overflow-y: scroll;
+	}
+	.checkbox {	
+		padding: 2px 10px;
+	}
+}
+// ----------------------------------------------------------------------------------------/terms
+
+// ------------------------------------------------------------------------------------------------
+// Analytics section
+// ------------------------------------------------------------------------------------------------
+.analytics-sidebar {
+	background-color: @vphsc-off-white;
+	border-color: #ccc;
+	
+}
+//If similar responsive behaviour desired elsewhere, use this class on other sidebars
+@media (min-width: 768px) {
+  .sidebar-nav {
+  	.navbar {
+		.navbar-collapse {
+		    padding: 0;
+		    max-height: none;
+		  }
+		  ul {
+		    float: none;
+		  }
+		  li {
+		    float: none;
+		    display: block;
+		    a {
+		    	padding-top: 12px;
+				padding-bottom: 12px;
+		    }
+		  }
+		 .navbar-brand {
+		 	padding: 15px;
+		 }
+  	}
+  }
+}
+
+.analytics-dash-card {
+	padding: 10px;
+	margin-bottom: 20px;
+	h3 {
+		margin-top: 0px;
+		color: @vphsc-off-white;
+	}
+	color: @vphsc-off-white;
+	.analytics-dash-value {
+		font-size: 50px;
+		.text-right();
+	}
+}
+.analytics-card-users {	
+	background-color: @vphsc-analytics-users-color;
+}
+.analytics-card-filings {
+	background-color: @vphsc-analytics-filings-color;
+}
+.analytics-card-feedback {
+	background-color: @vphsc-analytics-feedback-color;
+}
+.analytics-card-societies {
+	background-color: @vphsc-analytics-societies-color;
+}
+.analytics-card-outputs {
+	background-color: @vphsc-analytics-outputs-color;	
+}
+.analytics-card-payments {
+	background-color: @vphsc-analytics-payments-color;	
+}
+
+// ----------------------------------------------------------------------------------------/Analytics
+

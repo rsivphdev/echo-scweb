@@ -1,0 +1,56 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+           
+ 	<http auto-config="false" entry-point-ref="http403EntryPoint" use-expressions="true">
+    	<intercept-url pattern="/logout"		access="permitAll"/>
+        <intercept-url pattern="/exception/**"	access="permitAll"/>
+            
+        <!-- Ensure that this pattern is placed at the very end -->
+        <intercept-url pattern="/**"	access="hasRole('ROLE_USER')"/>
+        
+        <session-management invalid-session-url="/" ></session-management>
+        
+        <logout delete-cookies="vphsc.sessionid" logout-url="/public/spring/logout" 
+        	success-handler-ref="customLogoutSuccessHandler"
+	        invalidate-session="true" />
+            
+        <custom-filter position="PRE_AUTH_FILTER" ref="siteminderFilter" />
+        
+        <csrf disabled="true"/>
+    </http>
+
+	<beans:bean id="customLogoutSuccessHandler" class="ca.bc.gov.pssg.vph.sc.web.security.CustomLogoutSuccessHandler">
+    </beans:bean>
+        
+	<beans:bean id="http403EntryPoint" 
+		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+
+	<beans:bean	id="siteminderFilter" class="ca.bc.gov.pssg.vph.sc.web.security.CustomPreAuthenticationFilter">
+		<beans:property name="authenticationManager"	ref="smAuthenticationManager" />
+  	</beans:bean>
+
+    <authentication-manager alias="smAuthenticationManager">
+      <authentication-provider ref="siteMinderAuthenticationProvider" />
+    </authentication-manager>
+
+  	<beans:bean	id="siteMinderAuthenticationProvider" class="ca.bc.gov.pssg.vph.sc.web.security.CustonPreAuthenticationProvider">
+  		<beans:property name="preAuthenticatedUserDetailsService" ref="idimUserDetailsServiceWrapper" />
+	</beans:bean>
+	
+	<beans:bean id="idimUserDetailsServiceWrapper" class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+    	<beans:property name="userDetailsService" ref="idimUserDetailsService"/>
+	</beans:bean>
+	
+	<beans:bean	id="idimUserDetailsService" class="ca.bc.gov.pssg.vph.sc.web.security.IDIRUserDetailsService">
+	</beans:bean>
+	
+ </beans:beans>
